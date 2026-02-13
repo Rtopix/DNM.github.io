@@ -8,143 +8,143 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        :root { --bg: #d4d0c8; --win: #000080; --text: #000; --msg: #fff; --btn: #ccc; }
-        .dark { --bg: #2b2b2b; --win: #1a1a1a; --text: #efefef; --msg: #3c3c3c; --btn: #4a4a4a; }
-        body { font-family: "Tahoma", sans-serif; background: #008080; margin: 0; height: 100vh; color: var(--text); overflow: hidden; display: flex; justify-content: center; }
-        .window { background: var(--bg); border: 2px solid; border-color: #fff #808080 #808080 #fff; width: 100%; max-width: 600px; height: 100%; display: flex; flex-direction: column; }
-        .title-bar { background: linear-gradient(90deg, var(--win), #0821d2); color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; }
-        #auth-form, #main-ui { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        #auth-form { padding: 20px; gap: 10px; }
-        #contacts-bar { background: var(--bg); border-bottom: 2px solid #808080; padding: 5px; display: flex; gap: 5px; overflow-x: auto; min-height: 45px; }
-        .tab { padding: 8px 12px; background: var(--btn); border: 1px solid #888; cursor: pointer; font-size: 12px; white-space: nowrap; color: var(--text); }
-        .tab.active { background: #27ae60; color: white; font-weight: bold; }
-        input, textarea { border: 2px inset #fff; padding: 12px; background: white; font-size: 16px; width: 100%; color: #000; outline: none; }
-        .dark input, .dark textarea { background: #444; color: #fff; border-color: #555; }
-        #chat-window { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-        #messages { flex: 1; background: var(--msg); margin: 5px; border: 2px inset #808080; overflow-y: auto; padding: 10px; }
-        .msg { margin-bottom: 12px; font-size: 14px; padding: 8px; border-bottom: 1px solid rgba(128,128,128,0.2); }
-        .msg b { color: #27ae60; }
-        .controls { padding: 10px; background: var(--bg); border-top: 1px solid #808080; }
-        .btns { display: flex; gap: 5px; margin-top: 5px; }
-        button { background: var(--btn); border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 12px; font-weight: bold; cursor: pointer; color: var(--text); flex: 1; }
-        button:active { border-color: #808080 #fff #fff #808080; }
-        #search-box { padding: 8px; background: rgba(0,0,0,0.1); display: flex; gap: 5px; }
+        :root { --bg: #efefef; --win: #004e92; --text: #1a1a1a; --msg: #ffffff; --btn: #0078d4; --tab: #d1d1d1; }
+        .dark { --bg: #0f172a; --win: #1e293b; --text: #f1f5f9; --msg: #1e293b; --btn: #38bdf8; --tab: #334155; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0f172a; margin: 0; height: 100vh; color: var(--text); overflow: hidden; display: flex; flex-direction: column; }
+        .window { background: var(--bg); width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
+        .header { background: var(--win); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        #auth-form { padding: 30px 20px; display: flex; flex-direction: column; gap: 15px; flex: 1; justify-content: center; }
+        input, textarea { border: 1px solid #cbd5e1; padding: 14px; background: white; font-size: 16px; width: 100%; color: #000; border-radius: 8px; outline: none; }
+        .dark input, .dark textarea { background: #334155; color: #fff; border-color: #475569; }
+        #main-ui { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+        #search-box { padding: 10px; background: var(--win); display: flex; gap: 8px; }
+        #search-box input { padding: 8px 12px; font-size: 14px; }
+        #search-box button { flex: 0 0 80px; }
+        #contacts-bar { background: var(--win); padding: 0 10px 10px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+        .tab { padding: 6px 14px; background: var(--tab); border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; transition: 0.2s; border: none; color: var(--text); }
+        .tab.active { background: var(--btn); color: white; }
+        #chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        #messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 15px; line-height: 1.4; background: var(--msg); box-shadow: 0 1px 2px rgba(0,0,0,0.1); align-self: flex-start; }
+        .msg.mine { align-self: flex-end; background: var(--btn); color: white; }
+        .msg b { display: block; font-size: 12px; margin-bottom: 4px; opacity: 0.8; }
+        .controls { padding: 12px; background: var(--msg); border-top: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; }
+        .input-row { display: flex; gap: 8px; align-items: flex-end; }
+        textarea { flex: 1; height: 50px; resize: none; padding: 10px; border-radius: 20px; }
+        .send-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--btn); color: white; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .file-btn { background: none; border: none; color: var(--btn); font-size: 24px; padding: 0 5px; }
     </style>
 </head>
 <body>
 <div class="window">
-    <div class="title-bar">
-        <span>🌼 DNM</span>
+    <div class="header">
+        <span>🌼 DNM PRIVATE</span>
         <div style="display:flex; gap:15px">
-            <span onclick="document.body.classList.toggle('dark')" style="cursor:pointer">🌓</span>
-            <span onclick="location.reload()" style="cursor:pointer">✕</span>
+            <span onclick="document.body.classList.toggle('dark')">🌓</span>
+            <span onclick="location.reload()">✕</span>
         </div>
     </div>
     <div id="auth-form">
-        <input type="text" id="my-name" placeholder="Имя">
-        <input type="text" id="my-ot" placeholder="Ваш OPEN-TAG">
-        <input type="password" id="my-tag" placeholder="Ваш TAG">
-        <button onclick="login()">ВОЙТИ</button>
+        <h2 style="text-align:center; margin-top:0">Вход в сеть</h2>
+        <input type="text" id="u-name" placeholder="Отображаемое имя">
+        <input type="text" id="u-ot" placeholder="Ваш OPEN-TAG (@ID)">
+        <input type="password" id="u-tag" placeholder="Секретный TAG (Пароль)">
+        <button onclick="login()" style="padding:15px; border-radius:8px; border:none; background:var(--btn); color:white; font-weight:bold">ПОДКЛЮЧИТЬСЯ</button>
     </div>
-    <div id="main-ui" style="display:none">
+    <div id="main-ui">
         <div id="search-box">
-            <input type="text" id="search-u" placeholder="Поиск друга по OPEN-TAG">
-            <button onclick="startChat()" style="flex:0">ЧАТ</button>
+            <input type="text" id="s-user" placeholder="Поиск по @ID">
+            <button onclick="addChat()" style="border:none; border-radius:8px; background:rgba(255,255,255,0.2); color:white">ЧАТ</button>
         </div>
         <div id="contacts-bar"></div>
-        <div id="chat-window">
+        <div id="chat-area">
             <div id="messages"></div>
             <div class="controls">
-                <textarea id="text-input" placeholder="Сообщение..."></textarea>
-                <div class="btns">
-                    <button onclick="sendMsg()" style="flex:2; background:#27ae60; color:white">ОТПРАВИТЬ</button>
-                    <button onclick="document.getElementById('file').click()">ФАЙЛ</button>
+                <div class="input-row">
+                    <button class="file-btn" onclick="document.getElementById('f-in').click()">📎</button>
+                    <textarea id="msg-in" placeholder="Сообщение..."></textarea>
+                    <button class="send-btn" onclick="send()">➔</button>
                 </div>
-                <input type="file" id="file" style="display:none" onchange="sendFile()">
+                <input type="file" id="f-in" style="display:none" onchange="sendFile()">
             </div>
         </div>
     </div>
 </div>
-<audio id="ooh" src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptoken=66738981-d703-4927-993d-d40026e0e643"></audio>
+<audio id="notif" src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptoken=66738981-d703-4927-993d-d40026e0e643"></audio>
 <script>
     let gun, user = {}, cur = null, chats = {};
-    const ooh = document.getElementById('ooh');
+    const audio = document.getElementById('notif');
     function login() {
-        user.name = document.getElementById('my-name').value;
-        user.ot = document.getElementById('my-ot').value.trim();
-        user.tag = document.getElementById('my-tag').value;
-        if(!user.name || !user.ot || !user.tag) return;
+        user.name = document.getElementById('u-name').value;
+        user.ot = document.getElementById('u-ot').value.trim();
+        user.tag = document.getElementById('u-tag').value;
+        if(!user.name || !user.ot || !user.tag) return alert("Заполни данные");
         gun = Gun(['https://gun-manhattan.herokuapp.com/gun', 'https://libgun.herokuapp.com/gun']);
         document.getElementById('auth-form').style.display = 'none';
         document.getElementById('main-ui').style.display = 'flex';
-        switchChat('global');
+        goChat('global');
     }
-    function startChat() {
-        const t = document.getElementById('search-u').value.trim();
-        if(t && t !== user.ot) switchChat(t);
+    function addChat() {
+        const t = document.getElementById('s-user').value.trim();
+        if(t && t !== user.ot) goChat(t);
     }
-    function getID(t) {
-        if(t === 'global') return 'dnm_g_v3';
-        const p = [user.ot, t].sort();
-        return 'dnm_p_' + p[0] + '_' + p[1];
-    }
-    function switchChat(t) {
+    function goChat(t) {
         cur = t;
         if(!chats[t]) {
             chats[t] = true;
-            const b = document.createElement('div');
+            const b = document.createElement('button');
             b.className = 'tab';
-            b.id = 'tab-' + t;
-            b.innerText = t === 'global' ? 'ОБЩИЙ' : '@' + t;
-            b.onclick = () => switchChat(t);
+            b.id = 't-' + t;
+            b.innerText = t === 'global' ? 'Общий чат' : '@' + t;
+            b.onclick = () => goChat(t);
             document.getElementById('contacts-bar').appendChild(b);
         }
         document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-        document.getElementById('tab-' + t).classList.add('active');
-        document.getElementById('chat-window').style.display = 'flex';
+        document.getElementById('t-' + t).classList.add('active');
         document.getElementById('messages').innerHTML = '';
-        listen(getID(t));
+        const id = t === 'global' ? 'dnm_g_v4' : 'dnm_p4_' + [user.ot, t].sort().join('_');
+        listen(id);
     }
     function enc(d) { return CryptoJS.AES.encrypt(d, user.tag).toString(); }
     function dec(d) {
         try { return CryptoJS.AES.decrypt(d, user.tag).toString(CryptoJS.enc.Utf8) || null; } 
         catch(e) { return null; }
     }
-    function sendMsg() {
-        const i = document.getElementById('text-input');
+    function send() {
+        const i = document.getElementById('msg-in');
         if(!i.value.trim()) return;
-        gun.get(getID(cur)).set({ n: user.name, f: user.ot, m: enc(i.value), t: Date.now() });
+        const id = cur === 'global' ? 'dnm_g_v4' : 'dnm_p4_' + [user.ot, cur].sort().join('_');
+        gun.get(id).set({ n: user.name, f: user.ot, m: enc(i.value), d: Date.now() });
         i.value = "";
     }
     function sendFile() {
-        const f = document.getElementById('file').files[0];
-        if(!f || f.size > 1000000) return;
+        const f = document.getElementById('f-in').files[0];
+        if(!f || f.size > 1000000) return alert("Файл > 1МБ");
         const r = new FileReader();
         r.onload = (e) => {
-            gun.get(getID(cur)).set({ n: user.name, f: user.ot, m: enc("File: "+f.name), d: enc(e.target.result), type: f.type, t: Date.now() });
+            const id = cur === 'global' ? 'dnm_g_v4' : 'dnm_p4_' + [user.ot, cur].sort().join('_');
+            gun.get(id).set({ n: user.name, f: user.ot, m: enc("Файл: "+f.name), file: enc(e.target.result), type: f.type, d: Date.now() });
         };
         r.readAsDataURL(f);
     }
     function listen(id) {
         const box = document.getElementById('messages');
         const s = new Set();
-        gun.get(id).map().once((d, rid) => {
-            if(!d || s.has(rid)) return;
-            const m = dec(d.m);
-            if(m === null && id !== 'dnm_g_v3') return;
+        gun.get(id).map().once((data, rid) => {
+            if(!data || s.has(rid)) return;
+            const m = dec(data.m);
+            if(m === null && id !== 'dnm_g_v4') return;
             s.add(rid);
-            if(d.f !== user.ot) ooh.play().catch(()=>{});
+            if(data.f !== user.ot) audio.play().catch(()=>{});
             const v = document.createElement('div');
-            v.className = 'msg';
-            const txt = m || "[Зашифровано]";
-            let html = `<b>${d.n}:</b> ${txt}`;
-            if(d.d) {
-                const src = dec(d.d);
-                if(d.type.includes('image')) html += `<br><img src="${src}" style="max-width:100%">`;
-                else if(d.type.includes('video')) html += `<br><video src="${src}" controls style="max-width:100%"></video>`;
-                else html += `<br><a href="${src}" download style="color:blue">Скачать файл</a>`;
+            v.className = 'msg' + (data.f === user.ot ? ' mine' : '');
+            let h = `<b>${data.n}</b>${m || '[Зашифровано]'}`;
+            if(data.file) {
+                const src = dec(data.file);
+                if(data.type.includes('image')) h += `<br><img src="${src}" style="max-width:100%;border-radius:8px;margin-top:5px">`;
+                else h += `<br><a href="${src}" download style="color:inherit;text-decoration:underline">Скачать файл</a>`;
             }
-            v.innerHTML = html;
+            v.innerHTML = h;
             box.appendChild(v);
             box.scrollTop = box.scrollHeight;
         });
